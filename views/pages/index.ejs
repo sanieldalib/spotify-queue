@@ -1,32 +1,34 @@
 <html></<!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Spotify Queue</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
+<head>
+  <meta charset="utf-8">
+  <title>Spotify Queue</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
     <form id="search-form">
-      <div class="container">
-        <h1>Search</h1>
-        <hr>
 
-        <label for="email"><b>Song Name</b></label>
-        <input id="searchtext" type="text" placeholder="Enter a song..." name="search" required>
-        <hr>
-        <button type="submit" class="registerbtn">Search</button>
-      </div>
+      <h1>Search</h1>
+      <hr>
+
+      <label for="email"><b>Song Name</b></label>
+      <input id="searchtext" type="text" placeholder="Enter a song..." name="search" required>
+      <hr>
+      <button type="submit" class="registerbtn">Search</button>
     </form>
+    <button id="skip-button">Skip Song</button>
     <ul id="results">
     </ul>
-  </body>
-  <script
-    src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
-  <script>
-  $('#search-form').submit(e => {
+  </div>
+</body>
+<script
+src="https://code.jquery.com/jquery-3.3.1.min.js"
+integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+crossorigin="anonymous"></script>
+<script>
+$('#search-form').submit(e => {
 	e.preventDefault();
 	const query = $('#searchtext').val();
 
@@ -59,6 +61,12 @@
 });
 
 $(document).ready(() => {
+	$('#skip-button').click(() => {
+		$.ajax({
+			url: '/player/skip',
+			type: 'GET'
+		});
+	});
 	$(document).on('click', 'li.result', function() {
 		const item = $(this).data();
 

@@ -39,6 +39,7 @@ router.get('/skip', isAuthenticated, (req, res) => {
 	if (queue.length > 0) {
 		playSong(queue[0]);
 	}
+	res.status(200).send();
 });
 
 const playSong = song => {
@@ -57,7 +58,7 @@ const playSong = song => {
 		)
 		.then(res => {
 			console.log('setTimeout');
-			startTimer(song.song.duration_ms);
+			startTimer(song.song.duration_ms - 500);
 		})
 		.catch(err => {
 			console.log(err);
