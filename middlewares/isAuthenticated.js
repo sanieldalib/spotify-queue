@@ -3,7 +3,6 @@ const isAuthenticated = (req, res, next) => {
 		return next();
 	}
 
-	// IF A USER ISN'T LOGGED IN, THEN REDIRECT THEM SOMEWHERE
 	res.redirect('/');
 };
 

@@ -38,6 +38,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req, res) => {
+	if (!req.user) {
+		res.redirect('/auth/login');
+		return;
+	}
 	res.render('pages/index');
 });
 
