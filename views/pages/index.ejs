@@ -7,6 +7,68 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <h1>anurudh is cool</h1>
+    <form id="search-form">
+      <div class="container">
+        <h1>Search</h1>
+        <hr>
+
+        <label for="email"><b>Song Name</b></label>
+        <input id="searchtext" type="text" placeholder="Enter a song..." name="search" required>
+        <hr>
+        <button type="submit" class="registerbtn">Search</button>
+      </div>
+    </form>
+    <ul id="results">
+    </ul>
   </body>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script>
+  $('#search-form').submit(e => {
+	e.preventDefault();
+	const query = $('#searchtext').val();
+
+	$.ajax({
+		url: '/search',
+		type: 'POST',
+		data: {
+			querytext: query
+		},
+		dataType: 'json',
+		success: data => {
+			console.log(data);
+			const results = $('#results');
+			results.empty();
+			data.map((item, index) => {
+				const song = $('<li>')
+					.text(item.name)
+					.addClass('result')
+					.data('song', item);
+				const imgurl = item.album.images[1].url;
+				const img = $('<img>').attr('src', imgurl);
+				song.append(img);
+				results.append(song);
+			});
+		},
+		error: function(request, error) {
+			console.log(error);
+		}
+	});
+});
+
+$(document).ready(() => {
+	$(document).on('click', 'li.result', function() {
+		const item = $(this).data();
+
+		$.ajax({
+			url: '/player/play',
+			type: 'POST',
+			data: item,
+			dataType: 'json'
+		});
+	});
+});
+</script>
 </html>
