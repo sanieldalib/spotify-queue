@@ -4,7 +4,13 @@ const { Schema } = mongoose;
 const User = new Schema({
 	spotifyid: String,
 	name: String,
-	photos: [(type: String)]
+	photos: [{ type: String }],
+	profileUrl: String,
+	tokens: {
+		refreshToken: String,
+		accessToken: String,
+		expires: Date
+	}
 });
 
-mongoose.model('user', User);
+module.exports = mongoose.model('user', User);

@@ -1,39 +1,53 @@
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const mongoose = require('mongoose');
-const User = mongoose.model('user');
-//
-// passport.serializeUser((user, done) => {
-// 	done(null, user.id);
-// });
-//
-// passport.deserializeUser((id, done) => {
-// 	User.findById(id).then(user => {
-// 		done(null, user);
-// 	});
-// });
+const User = require('../models/User');
+
+passport.serializeUser((user, done) => {
+	console.log('serial');
+	done(null, user.spotifyid);
+});
+
+passport.deserializeUser((id, done) => {
+	console.log('deserialize');
+	User.findOne({ spotifyid: id }).then(user => {
+		done(null, user);
+	});
+});
 
 passport.use(
 	new SpotifyStrategy(
 		{
 			clientID: process.env.SPOTIFY_CLIENT_ID,
 			clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-			callbackURL: 'http://localhost:5000/auth/callback'
+			callbackURL: '/auth/callback',
+			proxy: true
 		},
-		async (accessToken, refreshToken, profile, done) => {
-			console.log(profile);
+		async (accessToken, refreshToken, expires, profile, done) => {
+			const date = new Date();
+			date.setSeconds(date.getSeconds() + expires);
 			const { id, displayName, photos, profileUrl } = profile;
 			const existingUser = await User.findOne({ spotifyid: id });
 
 			if (existingUser) {
+				existingUser.tokens.accessToken = accessToken;
+				existingUser.tokens.refreshToken = refreshToken;
+				existingUser.tokens.expires = date;
+				await existingUser.save();
 				done(null, existingUser);
 			} else {
 				const newUser = await new User({
 					spotifyid: id,
 					name: displayName,
 					photos: photos,
-					profileUrl: profileUrl
+					profileUrl: profileUrl,
+					tokens: {
+						accessToken: accessToken,
+						refreshToken: refreshToken,
+						expires: date
+					}
 				}).save();
+				newUser.token = accessToken;
 				done(null, newUser);
 			}
 		}
