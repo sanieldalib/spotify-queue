@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const isAuthenticated = require('../middlewares/isAuthenticated');
 
-router.get('/current', (req, res) => {
-	console.log('in it bitches');
+router.get('/current', isAuthenticated, (req, res) => {
 	const { accessToken } = req.user.tokens;
 	axios
 		.put(

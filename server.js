@@ -8,6 +8,7 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
 
+app.set('view engine', 'ejs');
 mongoose
 	.connect(
 		process.env.MONGODB_URI,
@@ -24,18 +25,10 @@ mongoose
 
 app.use(
 	session({
-		secret: 'keyboard cat',
+		secret: process.env.COOKIE_KEY,
 		saveUninitialized: true
 	})
 );
-// app.use(
-// 	cookieSession({
-// 		maxAge: 24 * 60 * 60 * 1000,
-// 		keys: [process.env.COOKIE_KEY]
-// 	})
-// );
-
-// app.use(cookieParser());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,16 +37,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req, res) => {
-	res.send('Welcome');
+	res.render('pages/index');
 });
-
-app.get(
-	'/play',
-	passport.authenticate('spotify', { session: false }),
-	(req, res) => {
-		console.log(req.user);
-	}
-);
 
 app.use('/auth', authRoutes);
 app.use('/player', playerRoutes);
