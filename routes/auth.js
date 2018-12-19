@@ -30,22 +30,4 @@ router.get(
 	}
 );
 
-router.get('/current', (req, res) => {
-	const { accessToken } = req.user.tokens;
-	console.log(accessToken);
-	axios
-		.put(
-			'https://api.spotify.com/v1/me/player/play',
-			{},
-			{
-				headers: {
-					Authorization: `Bearer ${accessToken}`
-				}
-			}
-		)
-		.catch(err => {
-			console.log(err);
-		});
-});
-
 module.exports = router;

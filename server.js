@@ -2,8 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
-// const cookieSession = require('cookie-session');
-// const cookieParser = require('cookie-parser');
+const playerRoutes = require('./routes/player');
 const session = require('express-session');
 const axios = require('axios');
 const bodyParser = require('body-parser');
@@ -57,6 +56,7 @@ app.get(
 );
 
 app.use('/auth', authRoutes);
+app.use('/player', playerRoutes);
 
 app.listen(process.env.PORT, () => {
 	console.log(`Listening on port ${process.env.PORT}`);
