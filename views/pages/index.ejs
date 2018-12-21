@@ -49,9 +49,9 @@ $('#search-form').submit(e => {
 			data.map((item, index) => {
 				const imgurl = item.album.images[1].url;
 				results.append(
-					`<li class="result"><img class="result-img" src="${imgurl}">${
+					`<li class="result"><img class="result-img" src="${imgurl}"><p class="results-text">${
 						item.name
-					}</li>`
+					}</p></li>`
 				);
 			});
 		},
