@@ -34,6 +34,7 @@ router.post('/play', isAuthenticated, (req, res) => {
 });
 
 router.get('/skip', isAuthenticated, (req, res) => {
+	console.log('skipped');
 	queue.shift();
 	console.log(queue);
 	if (queue.length > 0) {
