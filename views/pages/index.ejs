@@ -1,10 +1,11 @@
 <html></<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Spotify Queue</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
   <div class="container">
@@ -19,7 +20,9 @@
       <button type="submit" class="registerbtn">Search</button>
     </form>
     <button id="skip-button">Skip Song</button>
-    <ul id="results">
+    <ul class="list-unstyled">
+      <div id="results">
+      </div>
     </ul>
   </div>
 </body>
@@ -44,14 +47,12 @@ $('#search-form').submit(e => {
 			const results = $('#results');
 			results.empty();
 			data.map((item, index) => {
-				const song = $('<li>')
-					.text(item.name)
-					.addClass('result')
-					.data('song', item);
 				const imgurl = item.album.images[1].url;
-				const img = $('<img>').attr('src', imgurl);
-				song.append(img);
-				results.append(song);
+				results.append(
+					`<li class="result"><img class="result-img" src="${imgurl}">${
+						item.name
+					}</li>`
+				);
 			});
 		},
 		error: function(request, error) {
