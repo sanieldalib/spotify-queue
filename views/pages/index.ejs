@@ -33,6 +33,7 @@
 src="https://code.jquery.com/jquery-3.3.1.min.js"
 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
 $('#search-form').submit(e => {
 	e.preventDefault();
@@ -46,7 +47,6 @@ $('#search-form').submit(e => {
 		},
 		dataType: 'json',
 		success: data => {
-			console.log(data);
 			const results = $('#results');
 			results.empty();
 			data.map((item, index) => {
@@ -66,8 +66,11 @@ $('#search-form').submit(e => {
 });
 
 $(document).ready(() => {
+  var socket = io();
+  socket.connect();
 	$('#skip-button').click(() => {
 		console.log('skipped');
+    socket.emit('skipped', 'song')
 		$.ajax({
 			url: '/player/skip',
 			type: 'GET'
@@ -75,6 +78,8 @@ $(document).ready(() => {
 	});
 	$(document).on('click', 'li.result', function() {
 		const item = $(this).data();
+
+    console.log(item);
 
 		$.ajax({
 			url: '/player/play',

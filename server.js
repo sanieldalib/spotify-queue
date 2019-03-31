@@ -4,10 +4,13 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const playerRoutes = require('./routes/player');
 const searchRoutes = require('./routes/search');
+// const roomRoutes = require('.routes/room');
 const session = require('express-session');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
 
@@ -50,7 +53,59 @@ app.get('/', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/player', playerRoutes);
 app.use('/search', searchRoutes);
+// app.use('/room', roomRoutes);
 
-app.listen(process.env.PORT, () => {
+io.on('connection', (socket) => {
+  // socket joins a room
+  console.log('connected');
+  let id = socket.handshake.query;
+  console.log(id);
+
+  // adding a song
+  socket.on('connected', (obj) => {
+    console.log('yooooo');
+  });
+
+  socket.on('skipped', obj => {
+    console.log('skip ayyy');
+  });
+
+  // searching for a song
+  // socket.on('SEARCH', (query) => {
+  //   spotifyApi.search(query, (list) => {
+  //     socket.emit('UPDATE_RESULTS', list);
+  //   });
+  // });
+
+  // removing a song
+  // socket.on('REMOVE_SONG', (obj) => {
+  //   let index = obj.index;
+  //   let id = obj.id;
+  //   Room.removeSong(index, id, (err, room) => {
+  //     io.in(id).emit('UPDATE_PLAYLIST', room.list);
+  //   });
+  // });
+
+  // moving up a song
+  // socket.on('MOVEUP_SONG', (obj) => {
+  //   let index = obj.index;
+  //   let id = obj.id;
+  //   Room.moveUp(index, id, (err, room) => {
+  //     io.in(id).emit('UPDATE_PLAYLIST', room.list);
+  //   });
+  // });
+
+  // moving down a song
+  // socket.on('MOVEDOWN_SONG', (obj) => {
+  //   let index = obj.index;
+  //   let id = obj.id;
+  //   Room.moveDown(index, id, (err, room) => {
+  //     io.in(id).emit('UPDATE_PLAYLIST', room.list);
+  //   });
+  // });
+
+});
+
+http.listen(process.env.PORT, () => {
 	console.log(`Listening on port ${process.env.PORT}`);
 });

@@ -12,7 +12,8 @@ router.get(
 			'playlist-modify-private',
 			'playlist-modify-public',
 			'user-modify-playback-state',
-			'streaming'
+			'streaming',
+      'user-read-playback-state'
 		],
 		showDialog: true
 	}),

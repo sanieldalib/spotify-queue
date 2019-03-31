@@ -34,7 +34,6 @@ router.post('/play', isAuthenticated, (req, res) => {
 });
 
 router.get('/skip', isAuthenticated, (req, res) => {
-	console.log('skipped');
 	queue.shift();
 	console.log(queue);
 	if (queue.length > 0) {
@@ -43,8 +42,42 @@ router.get('/skip', isAuthenticated, (req, res) => {
 	res.status(200).send();
 });
 
+router.get('/devices', isAuthenticated, (req, res) => {
+  getDevices();
+})
+
+const getDevices = () => {
+  // console.log(owner);
+  // axios
+	// 	.get('https://api.spotify.com/v1/me/player/devices', {
+	// 		headers: {
+	// 			Authorization: `Bearer ${owner}`
+	// 		}
+	// 	}).then(res => {
+	// 		console.log(res.body);
+	// 	})
+	// 	.catch(err => {
+	// 		console.log(err);
+	// 	});
+
+
+    axios
+      .get('https://api.spotify.com/v1/me/player/devices', {
+        headers: {
+          Authorization: `Bearer ${owner}`
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+};
+
 const playSong = song => {
 	const { uri } = song.song;
+  console.log(owner);
 	axios
 		.put(
 			'https://api.spotify.com/v1/me/player/play',
@@ -66,28 +99,5 @@ const playSong = song => {
 		});
 };
 
-// router.post('/play', isAuthenticated, (req, res) => {
-// 	console.log(req.body);
-// 	const { songurl } = req.body;
-// 	const { accessToken } = req.user.tokens;
-// 	axios
-// 		.put(
-// 			'https://api.spotify.com/v1/me/player/play',
-// 			{
-// 				uris: [songurl]
-// 			},
-// 			{
-// 				headers: {
-// 					Authorization: `Bearer ${accessToken}`
-// 				}
-// 			}
-// 		)
-// 		.then(() => {
-// 			res.send('playing!');
-// 		})
-// 		.catch(err => {
-// 			console.log(err);
-// 		});
-// });
 
 module.exports = router;

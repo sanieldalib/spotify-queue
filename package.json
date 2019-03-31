@@ -17,10 +17,13 @@
 		"ejs": "^2.6.1",
 		"express": "^4.16.4",
 		"express-session": "^1.15.6",
+		"http": "0.0.0",
 		"jquery": "^3.3.1",
 		"mongoose": "^5.4.0",
 		"nodemon": "^1.18.9",
 		"passport": "^0.4.0",
-		"passport-spotify": "^1.0.1"
+		"passport-spotify": "^1.0.1",
+		"randomstring": "^1.1.5",
+		"socket.io": "^2.2.0"
 	}
 }
