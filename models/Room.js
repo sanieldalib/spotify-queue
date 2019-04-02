@@ -10,27 +10,33 @@ const roomSchema = new Schema({
   usePushEach: true
 });
 
-roomSchema.statics.findOrCreate = function (id, callback) {
-  var self = this;
-  console.log(id);
-  this.findOne({ id: id }, (err, room) => {
-    if (err) { callback(err) }
-    if (!room) {
-      console.log(id);
-      const room = new self({ id: id });
-      room.save((err) => {
-        if (err) {
-          callback(err)
-        } else {
-          callback(err, room);
-        }
-      });
-    }
-    if (room) {
-      callback(null, room);
+roomSchema.statics.createRoom = function(id, owner, callback) {
+  console.log(this);
+  const room = new self({ id: id, owner: owner });
+  room.save((err) => {
+    if (err) {
+      callback(err)
+    } else {
+      callback(err, room);
     }
   });
-}
+};
+
+roomSchema.statics.find = function(id, callback) {
+  this.findOne({ id: id }, (err, room) => {
+    if (err) {
+      callback(err);
+      console.log(err);
+    }
+
+    if (room) {
+      callback(null, room);
+    } else {
+      // catch if no room or error
+      callback(err);
+    }
+  });
+};
 
 roomSchema.statics.addSong = (song, id, callback) => {
   this.findOne({ id: id }, (err, room) => {

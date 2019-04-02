@@ -11,7 +11,6 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cookie = require('cookie');
 
-const Room = require('./models/Room');
 const isAuthenticated = require('./middlewares/isAuthenticated');
 const setCookie = require('./middlewares/setCookie');
 const { rooms } = require('./rooms');
@@ -21,6 +20,7 @@ const { users } = require('./Users');
 const authRoutes = require('./routes/auth');
 const playerRoutes = require('./routes/player');
 const searchRoutes = require('./routes/search');
+const roomRoutes = require('./routes/room');
 
 app.use(function(req, res, next){
   res.io = io;
@@ -72,26 +72,15 @@ app.get('/', (req, res) => {
 	res.render('pages/index');
 });
 
-app.get('/room/*', (req, res) => {
-  var id = req.params[0]
-  const { userId } = req.cookies;
-  console.log(userId);
-  Room.findOrCreate(id, (err, room)=> {
-    if (err) {res.send(err)}
-    createRoom(id, 'test')
-    res.render('pages/room');
-  })
-});
-
 app.use('/auth', authRoutes);
 app.use('/player', playerRoutes);
 app.use('/search', searchRoutes);
-// app.use('/room', roomRoutes);
+app.use('/room', roomRoutes);
 
 io.on('connection', (socket) => {
   // socket joins a room
   const cookies = cookie.parse(socket.handshake.headers.cookie);
-  addUser(cookies['user-id'], socket);
+  addUser(cookies['userId'], socket);
   console.log('connected');
 
 

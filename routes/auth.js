@@ -26,7 +26,10 @@ router.get(
 	'/callback',
 	passport.authenticate('spotify', { failureRedirect: '/login' }),
 	(req, res) => {
-		res.redirect('/');
+    var redirectTo = req.session.redirectTo || '/';
+    delete req.session.redirectTo;
+    // is authenticated ?
+    res.redirect(redirectTo);
 	}
 );
 

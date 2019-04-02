@@ -1,0 +1,115 @@
+<html></<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Spotify Queue</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-light bg-light">
+  <span class="navbar-brand mb-0 h1">Collab</span>
+</nav>
+<div class="container home">
+  <form id="join-form">
+    <h1>This Room does not exist. Create one.</h1>
+  </form>
+</div>
+</body>
+<script
+src="https://code.jquery.com/jquery-3.3.1.min.js"
+integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+// $('#join-form').submit(e => {
+//   e.preventDefault();
+//   const room = $('#roomId').val();
+//   console.log(room);
+//   $.ajax({
+//     url: `/room/${room}`,
+//     type: 'GET',
+//     dataType: 'json',
+//     success: data => {
+//       console.log(data);
+//       $('#roomName').html(`Welcome to ${data.id}`)
+//     },
+//     error: function(request, error) {
+//       console.log(error);
+//     }
+//   });
+// });
+// $('#search-form').submit(e => {
+// 	e.preventDefault();
+// 	const query = $('#searchtext').val();
+//
+// 	$.ajax({
+// 		url: '/search',
+// 		type: 'POST',
+// 		data: {
+// 			querytext: query
+// 		},
+// 		dataType: 'json',
+// 		success: data => {
+// 			const results = $('#results');
+// 			results.empty();
+// 			data.map((item, index) => {
+// 				const imgurl = item.album.images[1].url;
+// 				const result = $(
+// 					`<li class="result"><img class="result-img" src="${imgurl}"><p class="results-text">${
+// 						item.name
+// 					}</p></li>`
+// 				).data('song', item);
+// 				results.append(result);
+// 			});
+// 		},
+// 		error: function(request, error) {
+// 			console.log(error);
+// 		}
+// 	});
+// });
+//
+// $(document).ready(() => {
+//   const socket = io();
+//   var roomName = window.location.pathname;
+//   roomName = roomName.substring(roomName.lastIndexOf('/') + 1, roomName.length);
+//   socket.emit('join', roomName);
+//
+//   socket.on('connected', () => {
+//     console.log('connected');
+//   })
+//
+//   socket.on('playing', function(msg){
+//     console.log(msg.song.album.images[1].url);
+//     $('#playing-img').attr('src', msg.song.album.images[1].url)
+//     $('#playing-name').html(msg.song.name)
+//     $('#playing-artist').html(msg.song.artists[0].name)
+//   });
+//
+//
+// 	$('#skip-button').click(() => {
+// 		console.log('skipped');
+//     socket.emit('skipped', 'song')
+// 		$.ajax({
+// 			url: '/player/skip',
+// 			type: 'GET'
+// 		});
+// 	});
+// 	$(document).on('click', 'li.result', function() {
+// 		const item = $(this).data();
+//
+//     console.log(item);
+//
+// 		$.ajax({
+// 			url: '/player/play',
+// 			type: 'POST',
+// 			data: item,
+// 			dataType: 'json'
+// 		});
+// 	});
+// });
+
+
+</script>
+</html>
