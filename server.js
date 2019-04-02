@@ -1,20 +1,49 @@
+// dependencies
 const express = require('express');
 const passport = require('passport');
 const mongoose = require('mongoose');
-const authRoutes = require('./routes/auth');
-const playerRoutes = require('./routes/player');
-const searchRoutes = require('./routes/search');
-// const roomRoutes = require('.routes/room');
+const cookieParser = require('cookie-parser')
 const session = require('express-session');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const cookie = require('cookie');
+
+const Room = require('./models/Room');
+const isAuthenticated = require('./middlewares/isAuthenticated');
+const setCookie = require('./middlewares/setCookie');
+const { rooms } = require('./rooms');
+const { createRoom } = require('./rooms');
+const { addUser } = require('./Users');
+const { users } = require('./Users');
+const authRoutes = require('./routes/auth');
+const playerRoutes = require('./routes/player');
+const searchRoutes = require('./routes/search');
+
+app.use(function(req, res, next){
+  res.io = io;
+  next();
+});
 
 app.use(express.static(__dirname + '/public'));
+app.use(cookieParser());
+app.use(setCookie);
+
+const sessionMiddleware = session({
+    secret: process.env.COOKIE_KEY,
+    saveUninitialized: true
+});
+
+io.use(function(socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+app.use(sessionMiddleware);
 
 app.set('view engine', 'ejs');
+
 mongoose
 	.connect(
 		process.env.MONGODB_URI,
@@ -29,13 +58,6 @@ mongoose
 		}
 	);
 
-app.use(
-	session({
-		secret: process.env.COOKIE_KEY,
-		saveUninitialized: true
-	})
-);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -43,11 +65,22 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req, res) => {
-	if (!req.user) {
-		res.redirect('/auth/login');
-		return;
-	}
+	// if (!req.user) {
+	// 	res.redirect('/auth/login');
+	// 	return;
+	// }
 	res.render('pages/index');
+});
+
+app.get('/room/*', (req, res) => {
+  var id = req.params[0]
+  const { userId } = req.cookies;
+  console.log(userId);
+  Room.findOrCreate(id, (err, room)=> {
+    if (err) {res.send(err)}
+    createRoom(id, 'test')
+    res.render('pages/room');
+  })
 });
 
 app.use('/auth', authRoutes);
@@ -57,9 +90,10 @@ app.use('/search', searchRoutes);
 
 io.on('connection', (socket) => {
   // socket joins a room
+  const cookies = cookie.parse(socket.handshake.headers.cookie);
+  addUser(cookies['user-id'], socket);
   console.log('connected');
-  let id = socket.handshake.query;
-  console.log(id);
+
 
   // adding a song
   socket.on('connected', (obj) => {
@@ -70,40 +104,9 @@ io.on('connection', (socket) => {
     console.log('skip ayyy');
   });
 
-  // searching for a song
-  // socket.on('SEARCH', (query) => {
-  //   spotifyApi.search(query, (list) => {
-  //     socket.emit('UPDATE_RESULTS', list);
-  //   });
-  // });
-
-  // removing a song
-  // socket.on('REMOVE_SONG', (obj) => {
-  //   let index = obj.index;
-  //   let id = obj.id;
-  //   Room.removeSong(index, id, (err, room) => {
-  //     io.in(id).emit('UPDATE_PLAYLIST', room.list);
-  //   });
-  // });
-
-  // moving up a song
-  // socket.on('MOVEUP_SONG', (obj) => {
-  //   let index = obj.index;
-  //   let id = obj.id;
-  //   Room.moveUp(index, id, (err, room) => {
-  //     io.in(id).emit('UPDATE_PLAYLIST', room.list);
-  //   });
-  // });
-
-  // moving down a song
-  // socket.on('MOVEDOWN_SONG', (obj) => {
-  //   let index = obj.index;
-  //   let id = obj.id;
-  //   Room.moveDown(index, id, (err, room) => {
-  //     io.in(id).emit('UPDATE_PLAYLIST', room.list);
-  //   });
-  // });
-
+  socket.on('join', room => {
+    console.log(room + 'joined!');
+  })
 });
 
 http.listen(process.env.PORT, () => {

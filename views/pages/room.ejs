@@ -103,7 +103,9 @@ $('#search-form').submit(e => {
 
 $(document).ready(() => {
   const socket = io();
-  socket.connect('yo');
+  var roomName = window.location.pathname;
+  roomName = roomName.substring(roomName.lastIndexOf('/') + 1, roomName.length);
+  socket.emit('join', roomName);
 
   socket.on('connected', () => {
     console.log('connected');

@@ -23,3 +23,28 @@
 	background-color: grey;
 	margin-top: 50px;
 }
+
+#playing-bar {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  background-color: black;
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+#playing-img {
+  height: 50px;
+  width: 50px;
+  margin-left: 20px;
+}
+
+.playing-info {
+  margin-left: 10px;
+  color: white;
+}
+
+.playing-info p {
+  margin-bottom: -2px;
+}

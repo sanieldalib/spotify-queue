@@ -3,7 +3,7 @@ const router = express.Router();
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const axios = require('axios');
 
-router.post('/', (req, res) => {
+router.post('/',(req, res) => {
 	if (!req.user) {
 		console.log('auth');
 		res.status(400).send('Authentication');
