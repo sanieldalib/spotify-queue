@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { createRoom } = require('../rooms');
 const Schema = mongoose.Schema;
 
 const roomSchema = new Schema({
@@ -11,12 +12,12 @@ const roomSchema = new Schema({
 });
 
 roomSchema.statics.createRoom = function(id, owner, callback) {
-  console.log(this);
-  const room = new self({ id: id, owner: owner });
+  const room = new this({ id: id, owner: owner });
   room.save((err) => {
     if (err) {
       callback(err)
     } else {
+      createRoom(id, owner);
       callback(err, room);
     }
   });
@@ -25,8 +26,9 @@ roomSchema.statics.createRoom = function(id, owner, callback) {
 roomSchema.statics.find = function(id, callback) {
   this.findOne({ id: id }, (err, room) => {
     if (err) {
-      callback(err);
       console.log(err);
+      callback(err);
+      return
     }
 
     if (room) {

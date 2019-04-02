@@ -13,8 +13,6 @@ const cookie = require('cookie');
 
 const isAuthenticated = require('./middlewares/isAuthenticated');
 const setCookie = require('./middlewares/setCookie');
-const { rooms } = require('./rooms');
-const { createRoom } = require('./rooms');
 const { addUser } = require('./Users');
 const { users } = require('./Users');
 const authRoutes = require('./routes/auth');
@@ -90,7 +88,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('skipped', obj => {
-    console.log('skip ayyy');
+    console.log(obj);
   });
 
   socket.on('join', room => {

@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="container home">
-  <p id='roomName'></p>
+  <p id='roomName'>Room Name: <%= room.id %></p>
   <form id="join-form">
 
     <h1>Join A Room</h1>
@@ -54,6 +54,10 @@ integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
+
+var roomName = window.location.pathname;
+roomName = roomName.substring(roomName.lastIndexOf('/') + 1, roomName.length);
+
 $('#join-form').submit(e => {
   e.preventDefault();
   const room = $('#roomId').val();
@@ -103,8 +107,6 @@ $('#search-form').submit(e => {
 
 $(document).ready(() => {
   const socket = io();
-  var roomName = window.location.pathname;
-  roomName = roomName.substring(roomName.lastIndexOf('/') + 1, roomName.length);
   socket.emit('join', roomName);
 
   socket.on('connected', () => {
@@ -121,10 +123,14 @@ $(document).ready(() => {
 
 	$('#skip-button').click(() => {
 		console.log('skipped');
-    socket.emit('skipped', 'song')
+    socket.emit('skipped', roomName)
 		$.ajax({
 			url: '/player/skip',
-			type: 'GET'
+			type: 'GET',
+      data: {
+        'room': roomName
+      },
+      dataType: 'json'
 		});
 	});
 	$(document).on('click', 'li.result', function() {
@@ -135,7 +141,10 @@ $(document).ready(() => {
 		$.ajax({
 			url: '/player/play',
 			type: 'POST',
-			data: item,
+			data: {
+        'song': item,
+        'room': roomName
+      },
 			dataType: 'json'
 		});
 	});

@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const isAuthenticated = require('../middlewares/isAuthenticated');
+const { rooms } = require('../rooms');
 
-var queue = [];
 var owner = '';
 var timer = null;
 
@@ -37,22 +37,23 @@ const startTimer = time => {
 	}, time);
 };
 
-const addQueue = song => {
-	queue.push(song);
+const addQueue = (song, room) => {
+	const storedRoom = rooms[room];
+  storedRoom.addToQueue(song);
+  console.log(rooms);
 };
 
 router.post('/play', isAuthenticated, (req, res) => {
-	addQueue(req.body);
-	console.log(queue);
-	const { accessToken } = req.user.tokens;
-	owner = accessToken;
-	if (queue.length === 1) {
-		playSong(req.body, err => {
-      if (!err) {
-        res.io.emit('playing', req.body);
-      }
-    });
-	}
+	addQueue(req.body.song, req.body.room);
+	// const { accessToken } = req.user.tokens;
+	// owner = accessToken;
+	// if (queue.length === 1) {
+	// 	playSong(req.body, err => {
+  //     if (!err) {
+  //       res.io.emit('playing', req.body);
+  //     }
+  //   });
+	// }
 });
 
 router.get('/skip', isAuthenticated, (req, res) => {

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Room = require('../models/Room');
+const { rooms } = require('../rooms');
 
 // router.get('/create', (req, res) => {
 //   if (!req.user) {
@@ -12,25 +13,31 @@ const Room = require('../models/Room');
 //   console.log('ayyy');
 // });
 
-router.get('/create', (req, res) => {
+router.get('/create/*', (req, res) => {
+  const id = req.params[0]
   if (!req.user) {
-    req.session.redirectTo = '/room/create';
+    req.session.redirectTo = `/room/create/${id}`;
     res.redirect('/auth/login');
     return;
   }
 
-  const { id } = req.body;
-  console.log(req.user);
+  const owner = req.user.tokens.accessToken
 
-  if (!id) {
-    console.log('invalid id');
-    res.redirect('/')
-    return;
-  }
-  
-  Room.create(id, owner, (err, room) => {
+  // if (!id) {
+  //   console.log('invalid id');
+  //   res.redirect('/')
+  //   return;
+  // }
 
-  })
+  Room.createRoom(id, owner, (err, room) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/room/create')
+      return;
+    }
+    res.redirect(`/room/${id}`);
+  });
+
 })
 
 router.get('/*', (req, res) => {
@@ -43,7 +50,7 @@ router.get('/*', (req, res) => {
       res.render('noroom')
       return;
     }
-    // createRoom(id, 'test')
+
     res.render('pages/room', {room: room});
   })
 });
