@@ -9,14 +9,11 @@ router.post('/',(req, res) => {
 		res.status(400).send('Authentication');
 		return;
 	}
-	console.log(req.body);
 	const { querytext } = req.body;
 	const query = encodeURI(
 		`https://api.spotify.com/v1/search/?q=${querytext}&type=track&market=US`
 	);
-	console.log(query);
 	const { accessToken } = req.user.tokens;
-	console.log(accessToken);
 	axios
 		.get(query, {
 			headers: {
@@ -26,7 +23,6 @@ router.post('/',(req, res) => {
 		.then(response => {
 			console.log(response.data);
 			const { items } = response.data.tracks;
-			console.log(items);
 			res.send(items);
 		})
 		.catch(err => {

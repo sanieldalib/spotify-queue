@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const rooms = {};
 
 function Room(id, owner) {
@@ -12,15 +14,63 @@ function Room(id, owner) {
 };
 
 Room.prototype.startTimer = function(time) {
-  this.timer = setInterval(() => {
-    console.log(this.id);
-  }
-    ,500)
+  clearTimeout(this.timer);
+  const _this = this;
+  this.timer = setTimeout(() => {
+    this.playNext();
+  }, time);
 }
 
 Room.prototype.addToQueue = function(song) {
   this.queue.push(song);
-  this.startTimer(1000);
+
+  if (this.queue.length === 1) {
+    this.playSong(song, err => {
+      if (!err) {
+        //emit socket
+      }
+    });
+  }
+}
+
+Room.prototype.playNext = function() {
+  //shift queue and play next song
+  console.log('playing next');
+  this.queue.shift();
+  console.log(this.queue);
+  if (this.queue.length > 0) {
+    const song = this.queue[0];
+    this.playSong(song, err => {
+      if (!err) {
+
+      }
+    });
+  }
+}
+
+Room.prototype.playSong = function(song, cb) {
+  const { uri } = song.song;
+	axios
+		.put(
+			'https://api.spotify.com/v1/me/player/play',
+			{
+				uris: [uri]
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${this.owner}`
+				}
+			}
+		)
+		.then(res => {
+			console.log(`playing ${song.song.name}`);
+      this.startTimer(20*1000);
+      cb(null)
+		})
+		.catch(err => {
+			console.log(err);
+      cb(err)
+		});
 }
 
 const createRoom = (id, owner) => {

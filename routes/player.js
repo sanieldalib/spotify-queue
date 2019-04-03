@@ -40,7 +40,6 @@ const startTimer = time => {
 const addQueue = (song, room) => {
 	const storedRoom = rooms[room];
   storedRoom.addToQueue(song);
-  console.log(rooms);
 };
 
 router.post('/play', isAuthenticated, (req, res) => {
