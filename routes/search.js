@@ -2,22 +2,25 @@ const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const axios = require('axios');
+const { rooms } = require('../rooms');
 
 router.post('/',(req, res) => {
-	if (!req.user) {
-		console.log('auth');
-		res.status(400).send('Authentication');
+  const { querytext } = req.body;
+  const { room } = req.body;
+	if (!room) {
+		console.log('no room');
+		res.status(400).send('Not in a Room');
 		return;
 	}
-	const { querytext } = req.body;
+
 	const query = encodeURI(
 		`https://api.spotify.com/v1/search/?q=${querytext}&type=track&market=US`
 	);
-	const { accessToken } = req.user.tokens;
+	const { owner } = rooms[room];
 	axios
 		.get(query, {
 			headers: {
-				Authorization: `Bearer ${accessToken}`
+				Authorization: `Bearer ${owner}`
 			}
 		})
 		.then(response => {

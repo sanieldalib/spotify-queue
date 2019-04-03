@@ -42,7 +42,10 @@ const addQueue = (song, room) => {
   storedRoom.addToQueue(song);
 };
 
-router.post('/play', isAuthenticated, (req, res) => {
+router.post('/play', (req, res) => {
+  if (!req.body.song || !req.body.room) {
+    res.status(400).send('Incomplete Request!');
+  }
 	addQueue(req.body.song, req.body.room);
 	// const { accessToken } = req.user.tokens;
 	// owner = accessToken;

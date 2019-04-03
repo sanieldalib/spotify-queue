@@ -83,7 +83,8 @@ $('#search-form').submit(e => {
 		url: '/search',
 		type: 'POST',
 		data: {
-			querytext: query
+			querytext: query,
+      room: roomName
 		},
 		dataType: 'json',
 		success: data => {

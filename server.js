@@ -88,11 +88,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('skipped', obj => {
-    console.log(obj);
+    console.log(obj + ' skipping!');
   });
 
   socket.on('join', room => {
-    console.log(room + 'joined!');
+    console.log(room + ' joined!');
   })
 });
 
