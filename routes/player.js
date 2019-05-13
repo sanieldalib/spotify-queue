@@ -58,17 +58,9 @@ router.post('/play', (req, res) => {
 	// }
 });
 
-router.get('/skip', isAuthenticated, (req, res) => {
-	queue.shift();
-	console.log(queue);
-	if (queue.length > 0) {
-    const song = queue[0];
-		playSong(queue[0], err => {
-      if (!err) {
-        res.io.emit('playing', song);
-      }
-    });
-	}
+router.post('/skip', (req, res) => {
+  const { room } = req.body;
+  rooms[room].playNext();
 	res.status(200).send();
 });
 

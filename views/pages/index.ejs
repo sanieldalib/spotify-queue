@@ -122,7 +122,8 @@ $(document).ready(() => {
     socket.emit('skipped', 'song')
 		$.ajax({
 			url: '/player/skip',
-			type: 'GET'
+			type: 'GET',
+      room: roomName
 		});
 	});
 	$(document).on('click', 'li.result', function() {

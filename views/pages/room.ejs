@@ -125,9 +125,10 @@ $(document).ready(() => {
 	$('#skip-button').click(() => {
 		console.log('skipped');
     socket.emit('skipped', roomName)
+    console.log(roomName);
 		$.ajax({
 			url: '/player/skip',
-			type: 'GET',
+			type: 'POST',
       data: {
         'room': roomName
       },

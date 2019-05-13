@@ -23,7 +23,8 @@ Room.prototype.startTimer = function(time) {
 
 Room.prototype.addToQueue = function(song) {
   this.queue.push(song);
-
+  console.log(this.queue.length);
+  console.log(this.queue);
   if (this.queue.length === 1) {
     this.playSong(song, err => {
       if (!err) {
@@ -49,6 +50,7 @@ Room.prototype.playNext = function() {
 }
 
 Room.prototype.playSong = function(song, cb) {
+  this.queue.shift();
   const { uri } = song.song;
 	axios
 		.put(
@@ -64,7 +66,7 @@ Room.prototype.playSong = function(song, cb) {
 		)
 		.then(res => {
 			console.log(`playing ${song.song.name}`);
-      this.startTimer(20*1000);
+      this.startTimer(20*1000 - 500);
       cb(null)
 		})
 		.catch(err => {
