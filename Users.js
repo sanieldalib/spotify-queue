@@ -1,3 +1,5 @@
+// Users
+
 const users = {}
 
 const addUser = (user, socket) => {
