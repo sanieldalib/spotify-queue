@@ -11,10 +11,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cookie = require('cookie');
 
-const isAuthenticated = require('./middlewares/isAuthenticated');
 const setCookie = require('./middlewares/setCookie');
 const { addUser } = require('./Users');
-const { users } = require('./Users');
 const authRoutes = require('./routes/auth');
 const playerRoutes = require('./routes/player');
 const searchRoutes = require('./routes/search');

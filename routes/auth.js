@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const spotifyStrategy = require('../auth/passport');
-const axios = require('axios');
 
 router.get(
 	'/login',
