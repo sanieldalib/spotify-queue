@@ -40,3 +40,4 @@ const objectToQueryString = obj =>
 		.join('&');
 
 module.exports = router;
+
