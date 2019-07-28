@@ -1,6 +1,5 @@
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const mongoose = require('mongoose');
 const User = require('../models/User');
 
 passport.serializeUser((user, done) => {
