@@ -1,5 +1,12 @@
+html { 
+  height:100%;
+}
+body { 
+  min-height:100%;
+}
+
 .home {
-	padding-top: 50px;
+  padding-top: 10px;
 }
 
 .result-img {
@@ -15,13 +22,24 @@
 .result {
 	padding: 10px 0px;
 	border-bottom: 1px solid #000;
-	display: flex;
+  display: flex;
 }
 
 #results {
 	height: auto;
 	background-color: grey;
-	margin-top: 50px;
+  margin-top: 50px;
+}
+
+#queue-item {
+	height: auto;
+	background-color: white;
+  margin-top: 50px;
+}
+
+.search-side {
+  height: calc(100vh - 70px - 56px - 10px);
+  overflow-y: scroll
 }
 
 #playing-bar {
@@ -32,6 +50,7 @@
   height: 70px;
   display: flex;
   align-items: center;
+  z-index: 10;
 }
 
 #playing-img {

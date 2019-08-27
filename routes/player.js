@@ -7,24 +7,6 @@ const { rooms } = require('../rooms');
 var owner = '';
 var timer = null;
 
-// { album: [Object],
-//   artists: [Array],
-//   disc_number: '1',
-//   duration_ms: '213593',
-//   explicit: 'true',
-//   external_ids: [Object],
-//   external_urls: [Object],
-//   href: 'https://api.spotify.com/v1/tracks/2JvzF1RMd7lE3KmFlsyZD8',
-//   id: '2JvzF1RMd7lE3KmFlsyZD8',
-//   is_local: 'false',
-//   is_playable: 'true',
-//   name: 'MIDDLE CHILD',
-//   popularity: '96',
-//   preview_url: '',
-//   track_number: '1',
-//   type: 'track',
-//   uri: 'spotify:track:2JvzF1RMd7lE3KmFlsyZD8' } }
-
 const startTimer = time => {
 	console.log(time);
 	clearTimeout(timer);
@@ -43,10 +25,13 @@ const addQueue = (song, room) => {
 };
 
 router.post('/play', (req, res) => {
+  console.log('play endpoint hit');
   if (!req.body.song || !req.body.room) {
     res.status(400).send('Incomplete Request!');
   }
-	addQueue(req.body.song, req.body.room);
+  
+  addQueue(req.body.song, req.body.room);
+  res.status(200).send('Success');
 	// const { accessToken } = req.user.tokens;
 	// owner = accessToken;
 	// if (queue.length === 1) {
@@ -60,8 +45,9 @@ router.post('/play', (req, res) => {
 
 router.post('/skip', (req, res) => {
   const { room } = req.body;
+  console.log('skip requested')
   rooms[room].playNext();
-	res.status(200).send();
+  res.status(200).send();
 });
 
 router.get('/devices', isAuthenticated, (req, res) => {

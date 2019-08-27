@@ -1,6 +1,7 @@
 // dependencies
 const express = require('express');
 const passport = require('passport');
+// const redis = require('redis');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
@@ -8,7 +9,7 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('./io').init(http);
 const cookie = require('cookie');
 
 const isAuthenticated = require('./middlewares/isAuthenticated');
@@ -20,10 +21,12 @@ const playerRoutes = require('./routes/player');
 const searchRoutes = require('./routes/search');
 const roomRoutes = require('./routes/room');
 
-app.use(function(req, res, next){
-  res.io = io;
-  next();
-});
+// const client = redis.createClient();
+
+// app.use(function(req, res, next){
+//   res.io = io;
+//   next();
+// });
 
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
@@ -41,6 +44,14 @@ io.use(function(socket, next) {
 app.use(sessionMiddleware);
 
 app.set('view engine', 'ejs');
+
+// client.on('connect', () => {
+//   console.log('redis connected!');
+// });
+//
+// client.on('error', err => {
+//   console.log('error connecting to redis!' + err);
+// });
 
 mongoose
 	.connect(
@@ -81,8 +92,6 @@ io.on('connection', (socket) => {
   addUser(cookies['userId'], socket);
   console.log('connected');
 
-
-  // adding a song
   socket.on('connected', (obj) => {
     console.log('yooooo');
   });
@@ -92,7 +101,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join', room => {
-    console.log(room + ' joined!');
+    socket.join(room);
+    io.to(room).emit('new user');
   })
 });
 

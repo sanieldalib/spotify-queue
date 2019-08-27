@@ -10,6 +10,7 @@
 <body>
   <nav class="navbar navbar-light bg-light">
   <span class="navbar-brand mb-0 h1">Collab</span>
+  <div id='roomName'>Room Name: <%= room.id %></div>
 </nav>
 <div id='playing-bar'>
   <img id='playing-img' src='https://about.canva.com/wp-content/uploads/sites/3/2015/01/album-cover.png'/>
@@ -19,33 +20,33 @@
   </div>
 </div>
 <div class="container home">
-  <p id='roomName'>Room Name: <%= room.id %></p>
-  <form id="join-form">
+  <div class="row">
+    <div class="col-md-7 search-side">
+      <form id="search-form">
+        <h1>Search</h1>
+        <hr>
 
-    <h1>Join A Room</h1>
-    <hr>
-
-    <label for="email"><b>Room</b></label>
-    <input id="roomId" type="text" placeholder="Room Name..." name="roomId" required>
-    <hr>
-    <button type="submit" class="joinBtn">Join this Room</button>
-  </form>
-
-  <form id="search-form">
-
-    <h1>Search</h1>
-    <hr>
-
-    <label for="email"><b>Song Name</b></label>
-    <input id="searchtext" type="text" placeholder="Enter a song..." name="search" required>
-    <hr>
-    <button type="submit" class="registerbtn">Search</button>
-  </form>
-  <button id="skip-button">Skip Song</button>
-  <ul class="list-unstyled">
-    <div id="results">
+        <label for="email"><b>Song Name</b></label>
+        <input id="searchtext" type="text" placeholder="Enter a song..." name="search" required>
+        <hr>
+        <button type="submit" class="registerbtn">Search</button>
+      </form>
+      <button id="skip-button">Skip Song</button>
+      <ul class="list-unstyled">
+        <div id="results">
+        </div>
+      </ul>
     </div>
-  </ul>
+
+    <div class="col-md-5 search-side">
+        <h1>Queue</h1>
+        <hr>
+        <ul class="list-unstyled">
+          <div id="queue-list">
+          </div>
+        </ul>
+    </div>
+  </div>
 </div>
 </body>
 <script
@@ -58,23 +59,6 @@ crossorigin="anonymous"></script>
 var roomName = window.location.pathname;
 roomName = roomName.substring(roomName.lastIndexOf('/') + 1, roomName.length);
 
-$('#join-form').submit(e => {
-  e.preventDefault();
-  const room = $('#roomId').val();
-  console.log(room);
-  $.ajax({
-    url: `/room/${room}`,
-    type: 'GET',
-    dataType: 'json',
-    success: data => {
-      console.log(data);
-      $('#roomName').html(`Welcome to ${data.id}`)
-    },
-    error: function(request, error) {
-      console.log(error);
-    }
-  });
-});
 $('#search-form').submit(e => {
 	e.preventDefault();
 	const query = $('#searchtext').val();
@@ -115,17 +99,28 @@ $(document).ready(() => {
   })
 
   socket.on('playing', function(msg){
-    console.log(msg.song.album.images[1].url);
     $('#playing-img').attr('src', msg.song.album.images[1].url)
     $('#playing-name').html(msg.song.name)
     $('#playing-artist').html(msg.song.artists[0].name)
   });
 
+  socket.on('queue-update', queue => {
+    console.log(queue)
+    $('#queue-list').empty();
+    queue.map(item => {
+      const imgurl = item.song.album.images[1].url;
+      $('#queue-list').append(`<li class="result"><img class="result-img" src="${imgurl}"><p class="results-text">${item.song.name}</p></li>`);
+    })
+  })
+
+  socket.on('new user', () => {
+    console.log('new user!')
+  })
+
 
 	$('#skip-button').click(() => {
 		console.log('skipped');
     socket.emit('skipped', roomName)
-    console.log(roomName);
 		$.ajax({
 			url: '/player/skip',
 			type: 'POST',
@@ -134,11 +129,10 @@ $(document).ready(() => {
       },
       dataType: 'json'
 		});
-	});
+  });
+  
 	$(document).on('click', 'li.result', function() {
-		const item = $(this).data();
-
-    console.log(item);
+    const item = $(this).data();
 
 		$.ajax({
 			url: '/player/play',

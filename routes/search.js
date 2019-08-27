@@ -24,7 +24,6 @@ router.post('/',(req, res) => {
 			}
 		})
 		.then(response => {
-			console.log(response.data);
 			const { items } = response.data.tracks;
 			res.send(items);
 		})
