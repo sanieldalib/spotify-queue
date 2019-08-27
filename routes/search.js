@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const isAuthenticated = require('../middlewares/isAuthenticated');
 const axios = require('axios');
 const { rooms } = require('../rooms');
 
-// Searches for a song.
 router.post('/',(req, res) => {
   const { querytext } = req.body;
   const { room } = req.body;
@@ -16,7 +16,6 @@ router.post('/',(req, res) => {
 	const query = encodeURI(
 		`https://api.spotify.com/v1/search/?q=${querytext}&type=track&market=US`
 	);
-
 	const { owner } = rooms[room];
 	axios
 		.get(query, {
