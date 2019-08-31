@@ -23,11 +23,6 @@ const roomRoutes = require('./routes/room');
 
 // const client = redis.createClient();
 
-// app.use(function(req, res, next){
-//   res.io = io;
-//   next();
-// });
-
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 app.use(setCookie);
@@ -44,14 +39,6 @@ io.use(function(socket, next) {
 app.use(sessionMiddleware);
 
 app.set('view engine', 'ejs');
-
-// client.on('connect', () => {
-//   console.log('redis connected!');
-// });
-//
-// client.on('error', err => {
-//   console.log('error connecting to redis!' + err);
-// });
 
 mongoose
 	.connect(
