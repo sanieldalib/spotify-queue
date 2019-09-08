@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const Room = require('../models/Room');
-const { rooms } = require('../rooms');
+const { rooms } = require('../Rooms');
 
 // router.get('/create', (req, res) => {
 //   if (!req.user) {
